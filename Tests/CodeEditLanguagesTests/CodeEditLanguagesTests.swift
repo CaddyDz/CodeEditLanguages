@@ -49,6 +49,25 @@ final class CodeEditLanguagesTests: XCTestCase {
         XCTAssertEqual(root.child(at: 0)?.nodeType, "expression_statement")
     }
 
+    func test_HighlightPHPWithoutOpeningTag() throws {
+        var language = CodeLanguage.php
+        language.resourceURL = bundleURL
+        let query = try Query(language: language.language!, data: Data(contentsOf: language.queryURL!))
+        let source = "echo \"hi\";\n$user = new User();\n"
+        let parser = Parser()
+        try parser.setLanguage(language.language!)
+        let tree = try XCTUnwrap(parser.parse(source))
+        var captured: [String: String] = [:]
+        let cursor = query.execute(in: tree)
+        while let capture = cursor.nextCapture() {
+            captured[(source as NSString).substring(with: capture.range)] = capture.name
+        }
+        XCTAssertEqual(captured["echo"], "keyword", "\(captured)")
+        XCTAssertEqual(captured["\"hi\""], "string", "\(captured)")
+        XCTAssertEqual(captured["new"], "keyword", "\(captured)")
+        XCTAssertNotNil(captured["$user"], "\(captured)")
+    }
+
 // MARK: - C
 
     func test_CodeLanguageC() throws {
