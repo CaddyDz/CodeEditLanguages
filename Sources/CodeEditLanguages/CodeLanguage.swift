@@ -11,6 +11,11 @@ import SwiftTreeSitter
 import CodeLanguages_Container
 import RegexBuilder
 
+/// The PHP-only grammar (no leading `<?php`, no HTML) ships in the container framework
+/// but its header only declares `tree_sitter_php`.
+@_silgen_name("tree_sitter_php_only")
+private func tree_sitter_php_only() -> OpaquePointer?
+
 /// A structure holding metadata for code languages
 public struct CodeLanguage {
     internal init(
@@ -142,7 +147,7 @@ public struct CodeLanguage {
         case .perl:
             return tree_sitter_perl()
         case .php:
-            return tree_sitter_php()
+            return tree_sitter_php_only()
         case .python:
             return tree_sitter_python()
         case .regex:

@@ -322,8 +322,7 @@ public extension CodeLanguage {
         tsName: "php",
         extensions: ["php"],
         lineCommentString: "//",
-        rangeCommentStrings: ("/*", "*/"),
-        highlights: ["injections"]
+        rangeCommentStrings: ("/*", "*/")
     )
 
     /// A language structure for `Python`

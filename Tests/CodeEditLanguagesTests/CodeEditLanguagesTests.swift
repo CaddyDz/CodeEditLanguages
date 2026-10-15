@@ -36,9 +36,17 @@ final class CodeEditLanguagesTests: XCTestCase {
         language.resourceURL = bundleURL
 
         let data = try Data(contentsOf: language.queryURL!)
-        let query = try? Query(language: language.language!, data: data)
-        XCTAssertNotNil(query)
-        XCTAssertNotEqual(query?.patternCount, 0)
+        let query = try Query(language: language.language!, data: data)
+        XCTAssertNotEqual(query.patternCount, 0)
+    }
+
+    func test_ParsePHPWithoutOpeningTag() throws {
+        let parser = Parser()
+        try parser.setLanguage(CodeLanguage.php.language!)
+        let tree = try XCTUnwrap(parser.parse("$user = User::first();\necho $user->name;\n"))
+        let root = try XCTUnwrap(tree.rootNode)
+        XCTAssertFalse(root.hasError, root.sExpressionString ?? "")
+        XCTAssertEqual(root.child(at: 0)?.nodeType, "expression_statement")
     }
 
 // MARK: - C
